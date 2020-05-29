@@ -52,6 +52,8 @@ Now, instances of `User` can send, accept, and decline friend requests:
 # @dee can also decline the friend request
 @dee.decline_request(@mac)
 ```
+# Sometime you just need to add a friend directly
+@dee.add_friend(@mac)
 
 A friendship can also be removed:
 
@@ -136,6 +138,9 @@ Instances with accepted Friendship.
 
 @mac.friends # => [@dee]
 @dee.friends # => [@mac]
+
+# Get mutual friends
+@dee.mutual_friends_with(@mac)
 ```
 
 ### Custom validations
