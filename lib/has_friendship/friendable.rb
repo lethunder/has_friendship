@@ -108,11 +108,10 @@ module HasFriendship
         HasFriendship::Friendship.find_relation(self, friend, status: 2).any?
       end
 
-      private
-
       def has_blocked(friend)
         HasFriendship::Friendship.find_one_side(self, friend).blocker_id == self.id
       end
+      private
 
       def can_accept_request?(friendship)
         return if friendship.pending? && self == friendship.friendable
