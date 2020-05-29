@@ -10,23 +10,23 @@ module HasFriendship
                  class_name: "HasFriendship::Friendship", dependent: :destroy
 
         has_many :blocked_friends,
-                  -> { where friendships: { status: 3 } },
-                  through: :friendships,
-                  source: :friend
+                 -> { where friendships: {status: 3} },
+                 through: :friendships,
+                 source: :friend
 
         has_many :friends,
-                  -> { where friendships: { status: 2 } },
-                  through: :friendships
+                 -> { where friendships: {status: 2} },
+                 through: :friendships
 
         has_many :requested_friends,
-                  -> { where friendships: { status: 1 } },
-                  through: :friendships,
-                  source: :friend
+                 -> { where friendships: {status: 1} },
+                 through: :friendships,
+                 source: :friend
 
         has_many :pending_friends,
-                  -> { where friendships: { status: 0 } },
-                  through: :friendships,
-                  source: :friend
+                 -> { where friendships: {status: 0} },
+                 through: :friendships,
+                 source: :friend
 
         def self.friendable?
           true
@@ -65,6 +65,15 @@ module HasFriendship
           friendship = HasFriendship::Friendship.find_unblocked_friendship(one, other)
           friendship.accept! if can_accept_request?(friendship)
         end
+      end
+
+      def add_friend(friend)
+        friend.friend_request(self)
+        accept_request(friend)
+      end
+
+      def mutual_friends_with(friend)
+        friend.friends & friends
       end
 
       def decline_request(friend)
