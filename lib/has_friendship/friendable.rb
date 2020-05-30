@@ -18,6 +18,11 @@ module HasFriendship
                  -> { where friendships: {status: 2} },
                  through: :friendships
 
+        has_many :all_friends,
+                 -> { where friendships: { status: [2, 3] } },
+                 through: :friendships,
+                 source: :friend
+
         has_many :requested_friends,
                  -> { where friendships: {status: 1} },
                  through: :friendships,
