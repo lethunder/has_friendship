@@ -29,7 +29,7 @@ module HasFriendship
                  through: :friendships,
                  source: :friend
 
-        scope :unblocked_only, -> { where(friendships: { status: 2 })}
+        scope :unblocked, -> { where(friendships: { status: 2 })}
 
         def self.friendable?
           true
