@@ -141,7 +141,7 @@ Instances with accepted Friendship.
 @dee.friends # => [@mac]
 
 # Get only unblocked friends
-@dee.friends.unblocked_only
+@dee.friends.unblocked
 
 # Get mutual friends
 @dee.mutual_friends_with(@mac)
