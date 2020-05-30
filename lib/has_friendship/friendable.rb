@@ -15,10 +15,6 @@ module HasFriendship
                  source: :friend
 
         has_many :friends,
-                 -> { where friendships: {status: 2} },
-                 through: :friendships
-
-        has_many :all_friends,
                  -> { where friendships: { status: [2, 3] } },
                  through: :friendships,
                  source: :friend
@@ -32,6 +28,8 @@ module HasFriendship
                  -> { where friendships: {status: 0} },
                  through: :friendships,
                  source: :friend
+
+        scope :unblocked_only, -> { where(friendships: { status: 2 })}
 
         def self.friendable?
           true
