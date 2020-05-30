@@ -96,7 +96,7 @@ module HasFriendship
       def unblock_friend(friend)
         return unless has_blocked(friend)
         on_relation_with(friend) do |one, other|
-          HasFriendship::Friendship.find_blocked_friendship(one, other).destroy
+          HasFriendship::Friendship.find_blocked_friendship(one, other).update_columns(blocker_id: nil, status: 2)
         end
       end
 
