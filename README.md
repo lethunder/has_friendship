@@ -139,6 +139,9 @@ Instances with accepted Friendship.
 @mac.friends # => [@dee]
 @dee.friends # => [@mac]
 
+# Get all friends (including blocked friends)
+@dee.all_friends(@mac)
+
 # Get mutual friends
 @dee.mutual_friends_with(@mac)
 ```
