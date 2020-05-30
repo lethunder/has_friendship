@@ -136,11 +136,12 @@ Instances with accepted Friendship.
 @mac.friend_request(@dee)
 @dee.accept_request(@mac)
 
+# Get all friends (including blocked friends)
 @mac.friends # => [@dee]
 @dee.friends # => [@mac]
 
-# Get all friends (including blocked friends)
-@dee.all_friends(@mac)
+# Get only unblocked friends
+@dee.friends.unblocked_only
 
 # Get mutual friends
 @dee.mutual_friends_with(@mac)
