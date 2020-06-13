@@ -10,7 +10,7 @@ module HasFriendship
       friendable.try(:on_friendship_destroyed, record)
     end
 
-    enum status: { pending: 0, requested: 1, accepted: 2, blocked: 3 } do
+    enum status: { pending: "pending", requested: "requested", accepted: "accepted", blocked: "blocked" } do
       event :accept do
         transition [:pending, :requested] => :accepted
 
@@ -60,11 +60,11 @@ module HasFriendship
     end
 
     def self.find_unblocked_friendship(friendable, friend)
-      find_relation(friendable, friend).where.not(status: 3).first
+      find_relation(friendable, friend).where.not(status: "blocked").first
     end
 
     def self.find_blocked_friendship(friendable, friend)
-      find_relation(friendable, friend).where(status: 3).first
+      find_relation(friendable, friend).blocked.first
     end
 
     def self.find_one_side(one, other)

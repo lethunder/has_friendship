@@ -10,26 +10,26 @@ module HasFriendship
                  class_name: "HasFriendship::Friendship", dependent: :destroy
 
         has_many :blocked_friends,
-                 -> { where friendships: {status: 3} },
+                 -> { where friendships: {status: "blocked"} },
                  through: :friendships,
                  source: :friend
 
         has_many :friends,
-                 -> { where friendships: { status: [2, 3] } },
+                 -> { where friendships: { status: ["accepted", "blocked"] } },
                  through: :friendships,
                  source: :friend
 
         has_many :requested_friends,
-                 -> { where friendships: {status: 1} },
+                 -> { where friendships: {status: "requested"} },
                  through: :friendships,
                  source: :friend
 
         has_many :pending_friends,
-                 -> { where friendships: {status: 0} },
+                 -> { where friendships: {status: "pending"} },
                  through: :friendships,
                  source: :friend
 
-        scope :unblocked, -> { where(friendships: { status: 2 })}
+        scope :unblocked, -> { where(friendships: { status: "accepted" })}
 
         def self.friendable?
           true
@@ -57,8 +57,17 @@ module HasFriendship
       def friend_request(friend)
         unless self == friend || HasFriendship::Friendship.exist?(self, friend)
           transaction do
-            HasFriendship::Friendship.create_relation(self, friend, status: 0)
-            HasFriendship::Friendship.create_relation(friend, self, status: 1)
+            HasFriendship::Friendship.create_relation(self, friend, status: "pending")
+            HasFriendship::Friendship.create_relation(friend, self, status: "requested")
+          end
+        end
+      end
+
+      def suggested_friend_request(friend, suggester)
+        unless self == friend || HasFriendship::Friendship.exist?(self, friend)
+          transaction do
+            HasFriendship::Friendship.create_relation(self, friend, status: "pending", suggester_id: suggester.id)
+            HasFriendship::Friendship.create_relation(friend, self, status: "requested", suggester_id: suggester.id)
           end
         end
       end
@@ -96,7 +105,7 @@ module HasFriendship
       def unblock_friend(friend)
         return unless has_blocked(friend)
         on_relation_with(friend) do |one, other|
-          HasFriendship::Friendship.find_blocked_friendship(one, other).update_columns(blocker_id: nil, status: 2)
+          HasFriendship::Friendship.find_blocked_friendship(one, other).update_columns(blocker_id: nil, status: "accepted")
         end
       end
 
@@ -108,7 +117,7 @@ module HasFriendship
       end
 
       def friends_with?(friend)
-        HasFriendship::Friendship.find_relation(self, friend, status: 2).any?
+        HasFriendship::Friendship.find_relation(self, friend, status: "accepted").any?
       end
 
       def has_blocked(friend)
@@ -119,7 +128,7 @@ module HasFriendship
       def can_accept_request?(friendship)
         return if friendship.pending? && self == friendship.friendable
         return if friendship.requested? && self == friendship.friend
-
+        return if friendship.accepted?
         true
       end
     end
