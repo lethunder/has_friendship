@@ -9,7 +9,7 @@ CreateFriendships.class_eval do
     create_table :friendships do |t|
       t.references :friendable, polymorphic: true
       t.integer  :friend_id
-      t.string   :status
+      t.string   :status, null: false, default: :pending
 
       t.timestamps
     end

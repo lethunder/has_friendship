@@ -7,6 +7,8 @@ end
 UpdateFriendships.class_eval do
   def self.up
     add_column :friendships, :status_temp, :integer, index: true
+    add_column :friendships, :suggester_id, :integer, index: true
+
     HasFriendship::Friendship.where(status: 'pending').update_all(status_temp: 0)
     HasFriendship::Friendship.where(status: 'requested').update_all(status_temp: 1)
     HasFriendship::Friendship.where(status: 'accepted').update_all(status_temp: 2)
