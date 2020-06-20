@@ -52,6 +52,7 @@ Now, instances of `User` can send, accept, and decline friend requests:
 # @dee can also decline the friend request
 @dee.decline_request(@mac)
 ```
+
 # Sometime you just need to add a friend directly
 @dee.add_friend(@mac)
 
